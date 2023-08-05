@@ -1,0 +1,37 @@
+Get a reference to the XmlRpcClient 
+String url = "http://host1:8080/subscriber/xml_rpc.do"; 
+XmlRpcClientLite client = new XmlRpcClientLite(url); 
+ 
+// Set up the input parameters 
+Vector parameters = new Vector(); 
+Hashtable ht = new Hashtable(); 
+ht.put("username", "user1"); 
+ht.put("password", "cryptic1"); 
+parameters.addElement(ht); 
+ 
+// Send the request to Content Delivery Server 
+Hashtable response = (Hashtable) client.execute("AuthenticationHandler.getApiContext", parameters); 
+ 
+// Evaluate the response 
+String errorCode = (String)response.get("response_code"); 
+if (!errorCode.equals("1")) 
+{ 
+  // Handle Error 
+  System.out.println((String)response.get("response_message")); 
+  ... 
+} 
+else 
+{ 
+  // Authentication successful 
+  Hashtable apiContext = (Hashtable)response.get("apiContext"); 
+  Integer subscriberId = (Integer)apiContext.get("subscriberId"); 
+  String username = (String)apiContext.get("username"); 
+  String localeCode = (String)apiContext.get("localeCode"); 
+  String mobileId = (String)apiContext.get("mobileId"); 
+  Integer modelId = (Integer)apiContext.get("modelId"); 
+  ... 
+ 
+  // Save the ApiContext Hashtable in the Session 
+  session.setAttribute("API_CONTEXT", apiContext); 
+  ... 
+} 
